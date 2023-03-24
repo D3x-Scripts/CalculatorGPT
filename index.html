@@ -38,8 +38,13 @@
       <button class="button" onclick="append('sqrt(')">SR</button>
       <button class="button" onclick="append('cbrt(')">CR</button>
       <button class="button" onclick="append('nthrt(')">NR</button>
+      <button class="button" onclick="memoryAdd()">M+</button>
+      <button class="button" onclick="memorySubtract()">M-</button>
+      <button class="button" onclick="memoryRecall()">RM</button>
+      <button class="button" onclick="memoryStore()">MS</button>
       <button class="button" onclick="back()">D</button>
       <button class="clear"  onclick="clearResult()">C</button>
+      <button class="clear"  onclick="clearMem()">CM</button>
     </div>
     <div id="manual">
       <h1>Manual:</h1>
@@ -50,7 +55,7 @@
       <h3>x<sup>y</sup> button: x to the power of y, displayed with "**",can be used for non-instant exponent calculations.</h3>
       <h3>SR Button: Square root button.</h3>
       <h3>CR Button: Cube root button.</h3>
-      <h3>NR Button: Nth root button. Usage: nthrt(4,256) = 4</h3>
+      <h3>NR Button: Nth root button. Format: nthrt(exponent,number); Usage: nthrt(4,256) = 4</h3>
     </div>  
    
     <script>
@@ -65,15 +70,6 @@
       function back() {
         document.getElementById('result').innerHTML = document.getElementById('result').innerHTML.substring(0 ,document.getElementById('result').innerHTML.length-1);
       }
-
-
-      function append(value) {
-  document.getElementById('result').innerHTML += value;
-}
-
-function clearResult() {
-  document.getElementById('result').innerHTML = '';
-}
 
 function calculate(operator) {
   try {
@@ -111,11 +107,31 @@ function calculate(operator) {
     var result = eval(input);
     document.getElementById('result').innerHTML = result;
   } catch (e) {
-    document.getElementById('result').innerHTML = 'Error';
+    alert(e);
   }
 }
 
+var memory = 0;
 
+function memoryAdd() {
+  var result = document.getElementById('result').innerHTML;
+  memory += eval(result);
+}
+
+function memorySubtract() {
+  var result = document.getElementById('result').innerHTML;
+  memory -= eval(result);
+}
+function memoryRecall() {
+document.getElementById('result').innerHTML = memory;
+}
+function memoryStore() {
+  var result = document.getElementById('result').innerHTML;
+  memory = eval(result);
+}
+function clearMem() {
+  memory = 0;
+}
       function power(n) {
         var result = eval(document.getElementById('result').innerHTML);
         var powerResult = Math.pow(result, n);
