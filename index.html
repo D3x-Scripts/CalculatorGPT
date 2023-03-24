@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <title>CalculatorGPT</title>
@@ -27,16 +26,20 @@
       <button class="button" onclick="append('+')">+</button>
       <button class="button" onclick="append('-')">-</button>      
       <button class="button" onclick="append('*')">*</button>
-      <button class="button" onclick="append('/')",>/</button>
+      <button class="button" onclick="append('/')">/</button>
+      <button class="button" onclick="append(',')">,</button>
       <button class="button" onclick="calculate('=')">=</button>
       <button class="button" onclick="power(2)">x<sup>2</sup></button>
       <button class="button" onclick="power(3)">x<sup>3</sup></button>
-      <button class="button" onclick="apend('**')">x<sup>y</sup></button>
+      <button class="button" onclick="append('**')">x<sup>y</sup></button>
       <button class="button" onclick="append('%')">M</button>
       <button class="button" onclick="append('(')">(</button>
       <button class="button" onclick="append(')')">)</button>
+      <button class="button" onclick="append('sqrt(')">SR</button>
+      <button class="button" onclick="append('cbrt(')">CR</button>
+      <button class="button" onclick="append('nthrt(')">NR</button>
       <button class="button" onclick="back()">D</button>
-      <button class="clear" onclick="clearResult()">C</button>
+      <button class="clear"  onclick="clearResult()">C</button>
     </div>
     <div id="manual">
       <h1>Manual:</h1>
@@ -45,6 +48,9 @@
       <h3>x<sup>2</sup> button: x squared button(x*x).</h3>
       <h3>x<sup>3</sup> button: x cubed button(x*x*x).</h3>
       <h3>x<sup>y</sup> button: x to the power of y, displayed with "**",can be used for non-instant exponent calculations.</h3>
+      <h3>SR Button: Square root button.</h3>
+      <h3>CR Button: Cube root button.</h3>
+      <h3>NR BUtton: Nth root button. Usage: nthrt(4,256) = 4</h3>
     </div>  
    
     <script>
@@ -61,14 +67,55 @@
       }
 
 
-      function calculate(operator) {
-        try {
-          var result = eval(document.getElementById('result').innerHTML);
-          document.getElementById('result').innerHTML = result;
-        } catch (error) {
-          alert('Error!')
-        }
-      }
+      function append(value) {
+  document.getElementById('result').innerHTML += value;
+}
+
+function clearResult() {
+  document.getElementById('result').innerHTML = '';
+}
+
+function calculate(operator) {
+  try {
+    var input = document.getElementById('result').innerHTML;
+
+    // handle nth root
+    if (input.indexOf('nthrt(') !== -1) {
+      var index = input.indexOf('nthrt(');
+      var endIndex = input.indexOf(',', index);
+      var root = parseFloat(input.substring(index + 6, endIndex));
+      var startIndex = endIndex + 1;
+      endIndex = input.indexOf(')', index);
+      var number = parseFloat(input.substring(startIndex, endIndex));
+      var result = Math.pow(number, 1 / root);
+      input = input.substring(0, index) + result + input.substring(endIndex + 1);
+    }
+
+    // handle square root
+    if (input.indexOf('sqrt(') !== -1) {
+      var index = input.indexOf('sqrt(');
+      var endIndex = input.indexOf(')', index);
+      var number = parseFloat(input.substring(index + 5, endIndex));
+      var result = Math.sqrt(number);
+      input = input.substring(0, index) + result + input.substring(endIndex + 1);
+    }
+        // handle cube root
+        if (input.indexOf('cbrt(') !== -1) {
+      var index = input.indexOf('cbrt(');
+      var endIndex = input.indexOf(')', index);
+      var number = parseFloat(input.substring(index + 5, endIndex));
+      var result = Math.cbrt(number);
+      input = input.substring(0, index) + result + input.substring(endIndex + 1);
+    }
+
+    var result = eval(input);
+    document.getElementById('result').innerHTML = result;
+  } catch (e) {
+    document.getElementById('result').innerHTML = 'Error';
+  }
+}
+
+
       function power(n) {
         var result = eval(document.getElementById('result').innerHTML);
         var powerResult = Math.pow(result, n);
